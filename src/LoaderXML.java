@@ -6,26 +6,16 @@ public class LoaderXML {
 
     public static void main(String[] args) throws Exception
     {
-        //SAX-PARSER
-
-        long usage2 = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-        String fileName = "res/data-18M.xml";
+        String fileName = "res/data-1572M.xml";
+        long start = System.currentTimeMillis();
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser = factory.newSAXParser();
         XMLHandler handler = new XMLHandler();
         parser.parse(new File(fileName), handler);
-        handler.printDuplicatedVoters();
 
-        long us2Finish = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("\nusage = " + formatSize(us2Finish - usage2));
-    }
+        System.out.println("Parsing time is: " + (System.currentTimeMillis() - start));
 
-    private static String formatSize(long v)
-    {
-        if (v < 1024) return v + " B";
-        int z = (63 - Long.numberOfLeadingZeros(v)) / 10;
-        return String.format("%.1f %sB", (double) v / (1L << (z * 10)), " KMGTPE".charAt(z));
+        DBConnection.printVoterCounts();
     }
 }

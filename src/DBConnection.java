@@ -24,8 +24,8 @@ public class DBConnection
                         "name TINYTEXT NOT NULL, " +
                         "birthDate DATE NOT NULL, " +
                         "`count` INT NOT NULL, " +
-                        "PRIMARY KEY(id), " +
-                        "UNIQUE KEY name_date(name(50), birthDate))");
+                        "PRIMARY KEY(id))");// +
+                       // "UNIQUE KEY name_date(name(50), birthDate))");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -35,17 +35,15 @@ public class DBConnection
 
     public static void executeMultiInsert() throws SQLException {
         String sql = "INSERT INTO voter_count(name, birthDate, `count`)" +
-                "VALUES" + insertQuery.toString() +
-                "ON DUPLICATE KEY UPDATE `count`=`count` + 1";
+                "VALUES" + insertQuery.toString(); //+
+              //  "ON DUPLICATE KEY UPDATE `count`=`count` + 1";
         DBConnection.getConnection().createStatement().execute(sql);
     }
 
-    public static void countVoter(String name, String birthDay) throws SQLException {
-        birthDay = birthDay.replace('.', '-');
+    public static void countVoter(String name, String birthDate) {
         insertQuery.append((insertQuery.length() == 0 ? "" : ",") +
-                "('" + name + "', '" + birthDay + "', 1)");
+                "('" + name + "', '" + birthDate + "', 1)");
     }
-
     public static void printVoterCounts() throws SQLException
     {
         String sql = "SELECT name, birthDate, `count` FROM voter_count WHERE `count` > 1";
@@ -55,5 +53,9 @@ public class DBConnection
             System.out.println("\t" + rs.getString("name") + " (" +
                     rs.getString("birthDate") + ") - " + rs.getInt("count"));
         }
+    }
+
+    public static StringBuilder getInsertQuery() {
+        return insertQuery;
     }
 }
